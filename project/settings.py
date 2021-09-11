@@ -37,8 +37,14 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'instagram'
+    'instagram',
+    'bootstrap5',
+    'crispy_forms',
+    'crispy_bootstrap5',
 ]
+LOGIN_REDIRECT_URL = 'home'
+CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
+CRISPY_TEMPLATE_PACK = "bootstrap5"
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -63,7 +69,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'django.templates.context_processors.media',
+                'django.template.context_processors.media',
             ],
         },
     },
@@ -117,6 +123,7 @@ USE_L10N = True
 
 USE_TZ = True
 
+SITE_ID=1
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
