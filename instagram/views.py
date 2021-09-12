@@ -33,3 +33,7 @@ def profile(request,id):
             my_profile = Profile.objects.get(user=request.user)  # my profile
             my_profile.following.add(that_user) # add them to my following
             my_profile.save()
+
+
+            their_profile = Profile.objects.get(user=that_user)
+            their_profile.followers.add(request.user) # add me to their followers
