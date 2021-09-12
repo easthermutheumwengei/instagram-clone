@@ -11,7 +11,8 @@ class Profile(models.Model):
     user=models.OneToOneField(User,on_delete=models.CASCADE,null=True)
     photo=models.ImageField(upload_to='mages')
     bio=models.TextField(max_length=1200)
-
+    followers=models.ManyToManyField(User,related_name='followers')
+    following=models.ManyToManyField(User,related_name='following')
 @receiver(post_save, sender=User)
 def update_user_profile(sender, instance, created, **kwargs):
     if created:
