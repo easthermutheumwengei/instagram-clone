@@ -31,4 +31,5 @@ def profile(request,id):
             that_user = User.objects.get(id=that_user_id)  # get that user
 
             my_profile = Profile.objects.get(user=request.user)  # my profile
+            my_profile.following.add(that_user) # add them to my following
 
