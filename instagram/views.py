@@ -24,3 +24,9 @@ def signup(request):
 
 def profile(request,id):
     return render(request, 'profile.html', locals())
+
+    if request.method == 'POST':
+        if 'that_user_id' in request.POST:
+            that_user_id = request.POST.get('that_user_id')  # get user id
+            that_user = User.objects.get(id=that_user_id)  # get that user
+

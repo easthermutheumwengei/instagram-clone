@@ -1,6 +1,7 @@
 from django.contrib.auth.models import User
 from django.db import models
-from django.db.models.deletion import CASCADE
+from django.dispatch import receiver
+from django.db.models.signals import post_save
 
 # Create your models here.
 from django.db.models.signals import post_save
@@ -13,11 +14,15 @@ class Profile(models.Model):
     bio=models.TextField(max_length=1200)
     followers=models.ManyToManyField(User,related_name='followers')
     following=models.ManyToManyField(User,related_name='following')
+
 @receiver(post_save, sender=User)
 def update_user_profile(sender, instance, created, **kwargs):
     if created:
         Profile.objects.create(user=instance)
-    instance.profile.save()
+        try:
+            instance.profile.save()
+        except AttributeError:
+            pass
 
 class Image(models.Model):
     profile=models.ForeignKey(Profile,on_delete=models.CASCADE,null=True)
