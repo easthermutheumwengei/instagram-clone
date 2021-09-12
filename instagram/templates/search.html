@@ -1,10 +1,41 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{%extends 'base.html'%}
+{% block content %}
 
-</body>
-</html>
+<div class="container  gallery" id="galley">
+  <div class="container">
+
+    <div class="row mt-5">
+      {% if searched_category_images%}
+        <h5>Found {{searched_category_images|length }} of searched category {{message}}.</h5>
+      {% else %}
+        <h5> Found 0 images for the search category {{message}}.</h5>
+      {% endif %}
+
+    </div>
+
+      
+
+      <div class="row mt-3">
+          {%for image_item in searched_category_images %}
+
+          <img src="{{image_item.image.url}}" class="card-img-top m-2" alt="image" style="height: 20rem; width: 25rem;"
+              data-bs-toggle="modal" data-bs-target="#imageEnlarge{{image_item.id}}">
+              <!-- <img src="{{image_item.image.url}}" style="background-color: blanchedalmond; height: 20rem;" alt=""> -->
+
+          {% include "gallery/modal.html" %}
+
+          {% empty %}
+          <div class="row">
+              <h2 class="text-center">There No Image Items</h2>
+          </div>
+
+          {%endfor%}
+      </div>
+  </div>
+
+
+
+
+</div>
+
+{% endblock %}
