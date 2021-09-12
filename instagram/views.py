@@ -38,3 +38,6 @@ def profile(request,id):
             their_profile = Profile.objects.get(user=that_user)
             their_profile.followers.add(request.user) # add me to their followers
             their_profile.save()
+
+
+    return render(request, 'profile.html', locals())
