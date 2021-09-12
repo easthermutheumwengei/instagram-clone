@@ -30,3 +30,5 @@ def profile(request,id):
             that_user_id = request.POST.get('that_user_id')  # get user id
             that_user = User.objects.get(id=that_user_id)  # get that user
 
+            my_profile = Profile.objects.get(user=request.user)  # my profile
+
