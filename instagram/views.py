@@ -32,4 +32,4 @@ def profile(request,id):
 
             my_profile = Profile.objects.get(user=request.user)  # my profile
             my_profile.following.add(that_user) # add them to my following
-
+            my_profile.save()
