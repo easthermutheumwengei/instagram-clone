@@ -1,4 +1,5 @@
-{% load bootstrap5 %} {% load static %}
+{% load bootstrap5 %}
+{% load static %}
 <!DOCTYPE html>
 <html>
 
@@ -9,14 +10,18 @@
     <title> Instagram </title>
     {% endif %} {% bootstrap_css %}
     <link rel="stylesheet" href="{% static 'css/base.css' %}">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css" /> {% block styles %} {% endblock %}
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css" />
+    {% block styles %} {% endblock %}
 </head>
 
-<body>
+<body class="bg-light">
 
-    {%include 'navbar.html'%} {% block content %} {%endblock%} {% block scripts %}
+    {%include 'navbar.html'%}
+    {% block content %} {%endblock%}
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-    {% bootstrap_javascript %} {% endblock %}
+    {% bootstrap_javascript %}
+    {%block scripts%}
+    {%endblock scripts%}
 
 </body>
 
