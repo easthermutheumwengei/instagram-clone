@@ -1,5 +1,5 @@
 {%extends 'base.html'%}
-
+{%load static%}
 {%block styles%}
 <style>
 </style>
@@ -7,11 +7,11 @@
 
 {%block content%}
 
-<div class="row py-3 px-1">
+<div class="row py-3 pt-4  px-1  w-100 bg-light">
     <div class="col-md-8 mx-auto">
-        <div class="bg-white rounded overflow-hidden">
+        <div class="rounded overflow-hidden">
 
-            <div class="container">
+            <div class="container  bg-light">
                 <div class="row pb-4">
                     <div class="col-4 text-center">
                         <img src="https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=500&q=80"
@@ -21,20 +21,30 @@
                         <div class="text-center d-flex justify-content-between pb-3">
                             <span>{{profile.user.username|title}}</span>
                             {% if request.user != profile.user%}
-                            <button class="btn btn-sm btn-default border"><i class="fas fa-envelope-o"></i> message</button>
+                            <button class="btn btn-sm btn-default border"><i class="fas fa-envelope-o"></i> message
+                            </button>
                             <form method="post">
                                 {%csrf_token%}
                                 <input hidden name="that_user_id" value="{{profile.user.id}}">
-                                <button class="btn btn-sm btn-primary" type="submit"><i class="fas fa-plus"></i> follow</button>
+                                <button class="btn btn-sm btn-primary" type="submit"><i class="fas fa-plus"></i> follow
+                                </button>
                             </form>
+                            {%else%}
+                            <button class="btn btn-sm btn-default border text-primary border-primary"><i
+                                    class="fas fa-pencil-alt"></i> edit
+                            </button>
+                            <button class="btn btn-sm btn-default text-primary border border-primary"
+                                    data-bs-toggle="modal" data-bs-target="#add-post-modal"><i
+                                    class="fas fa-plus"></i> add post
+                            </button>
                             {%endif%}
                         </div>
                         <div class="text-center d-flex justify-content-between pb-3">
-                            <span> 1234 Posts</span>
+                            <span> {{posts.count}} Posts</span>
                             <span> {{profile.followers.count}} Followers</span>
                             <span>  {{profile.following.count}} Following</span>
                         </div>
-                        <div >
+                        <div>
                             <p class="text-bold">Bio</p>
                             <p></p>
                         </div>
@@ -44,27 +54,121 @@
             </div>
 
 
+            <div class="py-5 px-5">
 
-            <div class="py-4 px-4">
-                <div class="d-flex align-items-center justify-content-between mb-3">
-                    <h5 class="mb-0">Recent photos</h5><a href="#" class="btn btn-link text-muted">Show all</a>
+                {% for post in posts%}
+                <div class="container mb-2 rounded bg-white px-0 mx-0" id="id_{{post.id}}">
+                    <div class="p-2"> <strong>{{post.profile.user.username|title}}</strong></div>
+                    <div style="background-image: url('{{post.image.url}}');
+                              width: 100%;
+                              height: 300px;
+                              background-position: center;
+                              background-size: cover;" class="w-100">
+                    </div>
+                    <div>
+                        <div class="p-2 font-weight-bold">
+                            <button class="btn btn-sm btn-default" onclick="ajaxPostLike('{{post.id}}')" ><i class="far fa-heart fa-lg"></i></button>
+
+                            <button class="btn btn-sm btn-default" onclick="viewImage('{{post.id}}')"><i class="far fa-comment fa-lg"></i></button>
+                        </div>
+                        <div class="p-2 font-weight-bold"> {{post.likes|length}} likes</div>
+
+                        <div class="p-2"> <span class="font-weight-bold">comment poster</span> latest comment is this comment, ama niaje?</div>
+                    </div>
                 </div>
-                <div class="row">
-                    <div class="col-lg-6 mb-2 pr-lg-1"><img
-                            src="https://images.unsplash.com/photo-1469594292607-7bd90f8d3ba4?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=750&q=80"
-                            alt="" class="img-fluid rounded shadow-sm"></div>
-                    <div class="col-lg-6 mb-2 pl-lg-1"><img
-                            src="https://images.unsplash.com/photo-1493571716545-b559a19edd14?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=750&q=80"
-                            alt="" class="img-fluid rounded shadow-sm"></div>
-                    <div class="col-lg-6 pr-lg-1 mb-2"><img
-                            src="https://images.unsplash.com/photo-1453791052107-5c843da62d97?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1350&q=80"
-                            alt="" class="img-fluid rounded shadow-sm"></div>
-                    <div class="col-lg-6 pl-lg-1"><img
-                            src="https://images.unsplash.com/photo-1475724017904-b712052c192a?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=750&q=80"
-                            alt="" class="img-fluid rounded shadow-sm"></div>
-                </div>
+                {%endfor%}
+
             </div>
         </div>
     </div>
 </div>
+
+
+<!--add post modal-->
+<div class="modal" tabindex="-1" id="add-post-modal">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <form method="post" enctype="multipart/form-data">
+                {%csrf_token%}
+                <div class="modal-header border-0">
+                    <h5 class="modal-title">New Post</h5>
+                    <button
+                            type="button"
+                            class="btn-close"
+                            data-bs-dismiss="modal"
+                            aria-label="Close"
+                    ></button>
+                </div>
+                <div class="modal-body border-0 p-3">
+                    <input class="form-control form-control-sm mb-3" id="formFileSm" type="file"
+                           accept="image/png, image/jpeg, image/jpg" name="post-image" required/>
+                    <!-- Caption -->
+                    <textarea class="form-control" rows="4" placeholder="Enter caption..." name="post-caption"
+                              required></textarea>
+                </div>
+                <div class="modal-footer border-0">
+                    <button type="submit" class="btn btn-primary btn-block w-100">Submit</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!--view post modal-->
+<div class="modal" tabindex="-1" id="view-post-modal">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <form method="post" >
+                {%csrf_token%}
+                <div class="modal-header border-0">
+                    <h5 class="modal-title">Comment</h5>
+                    <button
+                            type="button"
+                            class="btn-close"
+                            data-bs-dismiss="modal"
+                            aria-label="Close"
+                    ></button>
+                </div>
+                <div class="modal-body border-0 p-3">
+                    <input class="form-control form-control-sm mb-3" id="formFileSm" type="file"
+                           accept="image/png, image/jpeg, image/jpg" name="post-image" required/>
+                    <!-- Caption -->
+                    <textarea class="form-control" rows="4" placeholder="Enter caption..." name="post-caption"
+                              required></textarea>
+                </div>
+                <div class="modal-footer border-0">
+                    <button type="submit" class="btn btn-primary btn-block w-100">Submit</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 {%endblock%}
+{%block scripts%}
+<script>
+    function ajaxPostLike(x){
+        var post_id = x;
+        $.ajax({
+            url: '/ajax/post-likes',
+            method: 'POST',
+            data: {
+              'post_id': post_id,
+              'csrfmiddlewaretoken': '{{csrf_token}}'
+            },
+            dataType: 'json',
+            success: function (returned_data) {
+              if (returned_data) {
+                console.log(returned_data);
+                setTimeout (function() {
+                  $(`#id_${x}`).load(document.URL + ` #id_${x}`);
+                }, 1000);
+              }
+            }
+      });
+    }
+    function viewImage(x){
+        var this_url = '{{request.path.info}}'
+        window.location = this_url +'/post/view/'+x
+
+    }
+</script>
+{%endblock scripts%}
