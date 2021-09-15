@@ -1,4 +1,4 @@
-<nav class="navbar navbar-light border">
+<nav class="navbar bg-white navbar-light border">
     <div class="container-fluid">
         <div class="logo">
             <a href="{% url 'home' %}"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Instagram_logo.svg/1200px-Instagram_logo.svg.png" alt="logo" width="103"></a>
@@ -12,9 +12,9 @@
                 <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
                     {% if user.is_authenticated%}
                     <li><a class="dropdown-item" href="{% url 'profile' id=request.user.id%}">Profile</a></li>
-                    <li><a class="dropdown-item" href="/logout">Logout</a></li>
+                    <li><a class="dropdown-item" href="{%url 'signout'%}">Logout</a></li>
                     {%else%}
-                    <li><a class="dropdown-item" href="/login">Login</a></li>
+                    <li><a class="dropdown-item" href="/signin">Login</a></li>
                     <li><a class="dropdown-item" href="/signup">Signup</a></li>
                     {%endif%}
                 </ul>
