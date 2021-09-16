@@ -7,12 +7,17 @@
     <title>Instagram - {{title}}</title>
     {% else %}
     <title> Instagram </title>
-    {% endif %} {% block styles %} {% bootstrap_css %}
+    {% endif %}
+    {% block styles %}
+    {% endblock styles %}
+    <style>
+    </style>
+    {% bootstrap_css %}
     <link rel="stylesheet" href="{% static 'css/base.css' %}">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css" /> {% endblock %}
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css" />
 </head>
 
-<body>
+<body style="height:100vh">
  {%block content%}
  {%endblock%}
 </body>

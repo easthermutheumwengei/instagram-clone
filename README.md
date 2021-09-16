@@ -45,6 +45,6 @@ Follow the following commands to run the project
 None known at the moment.
 
 ## Support and contact details
-In case of clarification email me at esthermutheu99@.@gmail.com
+In case of clarification email me at esthermutheu99@gmail.com
 
 ### License

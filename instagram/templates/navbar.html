@@ -1,15 +1,24 @@
+{%load static%}
 <nav class="navbar bg-white navbar-light border">
-    <div class="container-fluid">
+    <div class="container px-5">
         <div class="logo">
             <a href="{% url 'home' %}"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Instagram_logo.svg/1200px-Instagram_logo.svg.png" alt="logo" width="103"></a>
         </div>
         <div><a href="{% url 'admin:index'%}"><i class="fas fa-user-lock fa-1x ms-2" style="color: #0c0d0e;"></i></a></div>
-        <div class="d-flex justify-content-between">
-            <div class="dropdown">
-                <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                    Account
-                </button>
-                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+            <!-- Adding a search form  -->
+        <div class="col-sm-4 col-md-4 ">
+            <form class="form-inline my-2 my-sm-0" role="search" action="{% url 'search' %}">
+                <div class="input-group mr-2">
+                    <input class="form-control" type="search" placeholder="Search" aria-label="Search" name="image">
+                    <div class="input-group-btn border rounded-right pr-2">
+                        <button class="btn btn-default my-2 my-sm-0 rounded-right border-0" type="submit"><i class="fas fa-search"></i></button>
+                    </div>
+                </div>
+            </form>
+        </div>
+            <div class="dropdown ">
+                <div class="dropdown-toggle" id="dropdownMenuButton1" type="button"  data-bs-toggle="dropdown"><img style="height:30px;width:30px" class="rounded-circle btn-default " {%if post.profile.image%} src="{{post.profile.image.url}}" {%else%} src="{%static 'images/avatar.png'%}" {%endif%}></div>
+                <ul class="dropdown-menu dropdown-menu-right overflow-hidden" aria-labelledby="dropdownMenuButton1">
                     {% if user.is_authenticated%}
                     <li><a class="dropdown-item" href="{% url 'profile' id=request.user.id%}">Profile</a></li>
                     <li><a class="dropdown-item" href="{%url 'signout'%}">Logout</a></li>
@@ -20,18 +29,6 @@
                 </ul>
             </div>
         </div>
-        <!-- Adding a search form  -->
-        <div class="col-sm-4 col-md-4 navbar-right">
-            <form class="form-inline my-2 my-sm-0" role="search" action="{% url 'search' %}">
-                <div class="input-group">
-                    <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" name="image">
-                    <div class="input-group-btn">
-                        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-                    </div>
-                </div>
-            </form>
-        </div>
-    </div>
-    <!-- search form end -->
-    </div>
+
+
 </nav>

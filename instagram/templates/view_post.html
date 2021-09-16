@@ -1,10 +1,138 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
-</head>
-<body>
-$END$
-</body>
-</html>
+{%extends 'base.html'%}
+{%load static%}
+{%load humanize%}
+{%block styles%}
+<style>
+textarea:hover,
+input:hover,
+textarea:active,
+input:active,
+textarea:focus,
+input:focus,
+button:focus,
+button:active,
+button:hover,
+label:focus,
+.btn:active,
+.btn.active
+{
+    outline:0px !important;
+    -webkit-appearance:none;
+    box-shadow: none !important;
+}
+</style>
+{%endblock%}
+
+{%block content%}
+
+<div class="row py-3 pt-4  px-1  w-100 bg-light">
+    <div class="col-md-8 mx-auto">
+        <div class="rounded overflow-hidden">
+
+            <div class="py-5 px-5">
+                <div class="row">
+                    <div class="col-8">
+                        <div class="container mb-2 rounded bg-white px-0 pb-1 mx-0" id="id_{{post.id}}">
+                    <div style="background-image: url('{{post.image.url}}');
+                              width: 100%;
+                              height: 300px;
+                              background-position: center;
+                              background-size: cover;" class="w-100">
+                    </div>
+                    <div>
+                        <div class="p-2 font-weight-bold">
+                            <button class="btn btn-sm btn-default" onclick="ajaxPostLike('{{post.id}}')" ><i class="far fa-heart fa-lg"></i></button>
+
+                            <button class="btn btn-sm btn-default" data-bs-toggle="modal" data-bs-target="add-comment-modal"><i class="far fa-comment fa-lg"></i></button>
+                        </div>
+                        <div class="p-2 font-weight-bold"> {{post.likes|length}} likes</div>
+
+                        <div class="p-2">
+                        {%if post.comment %}
+                                {%for comment in post.comment.all%}
+                                    <p><a href="{%url 'profile' id=comment.profile.user.id%}" style="text-decoration:none;color:black"> <strong>{{comment.profile.user.username}}</strong></a> {{comment.comment}}</p>
+                                {%endfor%}
+                        {%else%}
+                                <p class="text-center"><small>No comments yet</small></p>
+                        {%endif%}
+                        </div>
+                    </div>
+                </div>
+                    </div>
+                    <div class="col-4 bg-white d-flex flex-column mb-2 pb-2">
+                        <div class="py-2"><a href="{%url 'profile' id=post.profile.user.id%}" style="text-decoration:none;color:black"><img style="height:24px;width:24px" class="rounded-circle" {%if post.profile.image%} src="{{post.profile.image.url}}" {%else%} src="{%static 'images/avatar.png'%}" {%endif%}> <strong>{{post.profile.user.username}}</strong></a>
+                        <p class="pl-0"><span class="text-muted small"><i class="fas fa-clock"></i> {{post.created_at|naturaltime}}</span></p></div>
+                            {%if post.comment%}
+                                    {%for comment in post.comment.all%}
+                                        <p><a href="{%url 'profile' id=comment.profile.user.id%}" style="text-decoration:none;color:black"> <strong>{{comment.profile.user.username}}</strong></a> {{comment.comment}}</p>
+                                    {%endfor%}
+                                {%else%}
+                                    <p class="text-center"><small>No comments yet</small></p>
+                            {%endif%}
+                        <form class="input-group mt-auto" method="post">
+                                {%csrf_token%}
+                              <textarea class="form-control" name="post_comment" placeholder="add a comment ..." ></textarea>
+                              <button class="btn btn-sm btn-default" type="submit"><i class="fas fa-paper-plane"></i></button>
+                        </form>
+                    </div>
+
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!--add comment modal-->
+<div class="modal" tabindex="-1" id="add-comment-modal">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <form method="post">
+                {%csrf_token%}
+                <div class="modal-header border-0">
+                    <h5 class="modal-title">Add Comment</h5>
+                    <button
+                            type="button"
+                            class="btn-close"
+                            data-bs-dismiss="modal"
+                            aria-label="Close"
+                    ></button>
+                </div>
+                <div class="modal-body border-0 p-3">
+                    <textarea class="form-control" rows="4" placeholder="Enter comment..." name="post-comment"
+                              required></textarea>
+                </div>
+                <div class="modal-footer border-0">
+                    <button type="submit" class="btn btn-primary btn-block w-100">Submit</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{%endblock%}
+{%block scripts%}
+<script>
+    function ajaxPostLike(x){
+        var post_id = x;
+        $.ajax({
+            url: '/ajax/post-likes',
+            method: 'POST',
+            data: {
+              'post_id': post_id,
+              'csrfmiddlewaretoken': '{{csrf_token}}'
+            },
+            dataType: 'json',
+            success: function (returned_data) {
+              if (returned_data) {
+                console.log(returned_data);
+                setTimeout (function() {
+                  $(`#id_${x}`).load(document.URL + ` #id_${x}`);
+                }, 1000);
+              }
+            }
+      });
+    }
+</script>
+{%endblock scripts%}

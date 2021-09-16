@@ -1,16 +1,20 @@
 {%extends "registration/base.html"%} {% load bootstrap5 %}
 {%load crispy_forms_tags%}
+{%block styles%}
+<style>
+  .text-muted{
+  display:none;
+  }
+</style>
+{%endblock styles%}
 {% block content %}
 
-<div class="container">
-  <div class="row">
+<div class="container h-100 d-flex">
+  <div class="row my-auto w-100">
     <!-- Empty div -->
     <div class="col-md-4"></div>
-    <div class="col-md-4">
-      {% if form.errors %}
-        <p> Some Information Might be Incorrect </p>
-      {% endif %}
-      <div class="panel panel-default">
+    <div class="col-md-4 border rounded">
+      <div class="panel panel-default pt-5 pb-3 p-2">
 
         <div class="panel-heading">
           <h3 class="text-center">Sign Up</h3>
@@ -20,8 +24,11 @@
           <form method="post">
             {% csrf_token %}
             {{form|crispy}}
-            <div class="form-group">
-              <input type="submit" class="btn btn-primary btn-sm" value="Sign Up">
+            <div class="form-group pt-2">
+              <input type="submit" class="btn btn-primary w-100" value="Sign Up">
+            </div>
+            <div class="form-group d-flex justify-content-between pt-4">
+              <span>Already have an account?</span><span><a href="{%url 'signin'%}" style="text-decoration:none">Sign In</a></span>
             </div>
 
           </form>

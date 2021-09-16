@@ -1,38 +1,164 @@
 {%extends 'base.html'%}
-{% load static%}
+{%load static%}
+{%load humanize%}
+{%block styles%}
+<style>
+textarea:hover,
+input:hover,
+textarea:active,
+input:active,
+textarea:focus,
+input:focus,
+button:focus,
+button:active,
+button:hover,
+label:focus,
+.btn:active,
+.btn.active
+{
+    outline:0px !important;
+    -webkit-appearance:none;
+    box-shadow: none !important;
+}
+</style>
+{%endblock%}
 
-{% block content %}
-    {{ block.super}}
+{%block content%}
 
-<div class="container  gallery" id="gallery">
-    <div class="text-center bg-transparent mt-4 " >
-        <div class="container">
+<div class="row py-5 m-0 w-100 bg-light">
+    <div class="col-md-8 mx-auto">
+        <div class="overflow-hidden">
             <div class="container">
-                <h4>Photos</h4>
-                <div class="row mt-3">
-                    {%for image_item in images %}
 
-                    <img src="{{image_item.image.url}}" class="card-img-top m-2 rounded z-depth-3" alt="image" style="height: 20rem; width: 25rem;"
-                        data-bs-toggle="modal" data-bs-target="#imageEnlarge{{image_item.id}}">
-                        <!-- <img src="{{image_item.image.url}}" style="background-color: blanchedalmond; height: 20rem;" alt=""> -->
-
-
-                    {% empty %}
-                    <div class="row">
-                        <h6 class="text-center">There No Image Items</h6>
+                {% for post in posts%}
+                <div class="container mb-4 rounded bg-white px-0 mx-0" id="id_{{post.id}}">
+                    <div class="p-2 d-flex justify-content-between"> <a href="{%url 'profile' id=post.profile.user.id%}" style="text-decoration:none;color:black"> <strong>{{post.profile.user.username}}</strong></a> <span class="text-muted small"><i class="fas fa-clock"></i> {{post.created_at|naturaltime}}</span></div>
+                    <div style="background-image: url('{{post.image.url}}');
+                              width: 100%;
+                              height: 300px;
+                              background-position: center;
+                              background-size: cover; cursor:pointer;" class="w-100" onclick="viewImage('{{post.id}}')">
                     </div>
+                    <div>
+                        <div class="p-2 font-weight-bold">
+                            <button class="btn btn-sm btn-default" onclick="ajaxPostLike('{{post.id}}')" ><i class="far fa-heart fa-lg"></i></button>
 
-                    {%endfor%}
+                            <button class="btn btn-sm btn-default" onclick="viewImage('{{post.id}}')"><i class="far fa-comment fa-lg"></i></button>
+                        </div>
+                        <div class="p-2 font-weight-bold"> {{post.likes|length}} likes</div>
+                        <div class="p-2">
+                        {%if post.comment %}
+                                {%for comment in post.comment.all%}
+                                    <p><a href="{%url 'profile' id=comment.profile.user.id%}" style="text-decoration:none;color:black"> <strong>{{comment.profile.user.username}}</strong></a> {{comment.comment}}</p>
+                                {%endfor%}
+                        {%else%}
+                                <p class="text-center"><small>No comments yet</small></p>
+                        {%endif%}
+
+                        </div>
+                        <div>
+                            <form class="input-group p-2" method="post">
+                                {%csrf_token%}
+                              <textarea class="form-control rounded" name="post_comment" placeholder="add a comment ..." ></textarea>
+                                <input hidden name="post_id" value="{{post.id}}">
+                              <button class="btn btn-sm btn-default" type="submit"><i class="fas fa-paper-plane"></i></button>
+                            </form>
+                        </div>
+                    </div>
                 </div>
+                {%endfor%}
+
             </div>
-
         </div>
-      </div>
-
-
-
-
-
+    </div>
 </div>
 
-{% endblock %}
+
+<!--add post modal-->
+<div class="modal" tabindex="-1" id="add-post-modal">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <form method="post" enctype="multipart/form-data">
+                {%csrf_token%}
+                <div class="modal-header border-0">
+                    <h5 class="modal-title">New Post</h5>
+                    <button
+                            type="button"
+                            class="btn-close"
+                            data-bs-dismiss="modal"
+                            aria-label="Close"
+                    ></button>
+                </div>
+                <div class="modal-body border-0 p-3">
+                    <input class="form-control form-control-sm mb-3" id="formFileSm" type="file"
+                           accept="image/png, image/jpeg, image/jpg" name="post-image" required/>
+                    <!-- Caption -->
+                    <textarea class="form-control" rows="4" placeholder="Enter caption..." name="post-caption"
+                              required></textarea>
+                </div>
+                <div class="modal-footer border-0">
+                    <button type="submit" class="btn btn-primary btn-block w-100">Submit</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!--view post modal-->
+<div class="modal" tabindex="-1" id="view-post-modal">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <form method="post" >
+                {%csrf_token%}
+                <div class="modal-header border-0">
+                    <h5 class="modal-title">Comment</h5>
+                    <button
+                            type="button"
+                            class="btn-close"
+                            data-bs-dismiss="modal"
+                            aria-label="Close"
+                    ></button>
+                </div>
+                <div class="modal-body border-0 p-3">
+                    <input class="form-control form-control-sm mb-3" id="formFileSm" type="file"
+                           accept="image/png, image/jpeg, image/jpg" name="post-image" required/>
+                    <!-- Caption -->
+                    <textarea class="form-control" rows="4" placeholder="Enter caption..." name="post-caption"
+                              required></textarea>
+                </div>
+                <div class="modal-footer border-0">
+                    <button type="submit" class="btn btn-primary btn-block w-100">Submit</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{%endblock%}
+{%block scripts%}
+<script>
+    function ajaxPostLike(x){
+        var post_id = x;
+        $.ajax({
+            url: '/ajax/post-likes',
+            method: 'POST',
+            data: {
+              'post_id': post_id,
+              'csrfmiddlewaretoken': '{{csrf_token}}'
+            },
+            dataType: 'json',
+            success: function (returned_data) {
+              if (returned_data) {
+                console.log(returned_data);
+                setTimeout (function() {
+                  $(`#id_${x}`).load(document.URL + ` #id_${x}`);
+                }, 1000);
+              }
+            }
+      });
+    }
+    function viewImage(x){
+        var this_url = '{{request.path.info}}'
+        window.location = this_url +'/post/view/'+x
+
+    }
+</script>
+{%endblock scripts%}
