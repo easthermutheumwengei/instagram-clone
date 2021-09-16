@@ -27,7 +27,7 @@ instagram-clone is a web application that allows users to upload photos, view ot
 * Django
 
 ## Application link
-
+https://instamutheu.herokuapp.com/
 ## Prerequisites
 * Python 3.8 required
 * Postgresql
