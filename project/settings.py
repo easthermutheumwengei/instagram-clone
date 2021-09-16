@@ -52,7 +52,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY ='django-insecure-6mn!+-@hawei+*6fi6&@+8eh6-0%w$w+pdaz_x!88z^!-*br(7'
 
-gDEBUG = True
+DEBUG = True
 
 ALLOWED_HOST = ['https://instamutheu.herokuapp.com/']
 
