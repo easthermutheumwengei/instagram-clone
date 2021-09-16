@@ -47,7 +47,7 @@ DATABASES['default'].update(db_from_env)
 
 ALLOWED_HOSTS = config('ALLOWED_HOSTS', cast=Csv())
 
-ALLOWED_HOST=[]
+ALLOWED_HOST=['https://instamutheu.herokuapp.com/']
 
 INSTALLED_APPS = [
     'django.contrib.admin',
